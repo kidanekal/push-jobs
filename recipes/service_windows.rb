@@ -26,6 +26,31 @@ service_name = PushJobsHelper.windows_service_name(node, version)
 
 config_file_option = "-c #{PushJobsHelper.config_path}"
 
+class RecipeResource < ChefCompat::Resource
+  resource_name :recipe_block
+  property :recipe, Proc
+  action :run do
+    instance_eval(&recipe)
+  end
+end
+
+def recipe(&block)
+  recipe_block 'a recipe' do
+    recipe(block)
+  end
+end
+
+# meanwhile, in libraries ....
+class Chef::Resource::PushJobsRegistryKey < Chef::Resource::RegistryKey
+  def values
+
+
+end
+
+registry_key key_path do
+  provider ProviderThatIMadeForRegistryKeyThatSupportsLazy
+end
+
 # The Parameters key isn't respected by some versions. Inject the
 # config file path into ImagePath.
 #
@@ -40,14 +65,15 @@ config_file_option = "-c #{PushJobsHelper.config_path}"
 # a service restart is attempted.
 key_path = "HKLM\\SYSTEM\\CurrentControlSet\\Services\\#{service_name}"
 
+
+recipe do
+  values = registry_get_values(key_path)
+  imagepath = values.find { |x| x[:name] == 'ImagePath' }
+  match = imagepath[:data].match(/^(.*ruby\.exe)\s+(\S*windows_service\.rb)/)
+  imagepath[:data] = "#{match[1]} #{match[2]} #{config_file_option}"
 registry_key key_path do
-  values lazy do
-    values = registry_get_values(key_path)
-    imagepath = values.find { |x| x[:name] == 'ImagePath' }
-    match = imagepath[:data].match(/^(.*ruby\.exe)\s+(\S*windows_service\.rb)/)
-    imagepath[:data] = "#{match[1]} #{match[2]} #{config_file_option}"
-    [imagepath]
-  end
+  action :nothing
+  values [imagepath]
   notifies :restart, "service[#{service_name}]"
   only_if { registry_key_exists?(key_path) }
 end
@@ -56,3 +82,6 @@ service service_name do
   action [:enable, :start]
   subscribes :restart, "template[#{PushJobsHelper.config_path}]"
 end
+  end
+end
+
