@@ -33,7 +33,7 @@ if node['push_jobs']['package_url']
 
   remote_file "#{Chef::Config[:file_cache_path]}/#{package_file}" do
     source package_url
-    checksum package_checksum
+    #checksum package_checksum
     mode 00644
   end
 
