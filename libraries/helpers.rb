@@ -25,7 +25,7 @@ require 'chef/config'
 
 # Helper functions for Push Jobs cookbook
 module PushJobsHelper # rubocop:disable Metrics/ModuleLength
-  def self.package_file(url = 'http://www.opscode.com/chef/install.sh')
+  def self.package_file(url = 'https://packagecloud.io/install/repositories/chef/current/script.deb.sh')
     uri = ::URI.parse(::URI.unescape(url))
     package_file = File.basename(uri.path)
     package_file
