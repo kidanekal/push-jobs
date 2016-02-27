@@ -45,7 +45,7 @@ module PushJobsHelper # rubocop:disable Metrics/ModuleLength
         :family_1_0
       elsif version =~ /^1\.3/
         :family_1_3
-      elsif version =~ /^2\.0\.0-alpha/
+      elsif version =~ /^2\.0/
         :family_2_alpha
       else
         fail "No info for version '#{version}'"
