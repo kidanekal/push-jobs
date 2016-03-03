@@ -31,6 +31,7 @@ default['push_jobs']['environment_variables']       = { 'LC_ALL' => 'en_US.UTF-8
 # These variables control whether we validate ssl
 default['push_jobs']['chef']['verify_api_cert']     = true
 default['push_jobs']['chef']['ssl_verify_mode']     = :verify_peer
+default['push_jobs']['chef']['allow_unencrypted']   = true
 
 # These can be overridden so that we can use chef_zero based installers to set up push
 default['push_jobs']['chef']['chef_server_url']     = nil

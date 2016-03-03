@@ -52,4 +52,5 @@ template PushJobsHelper.config_path do
     verify_api_cert: node['push_jobs']['chef']['verify_api_cert'],
     ssl_verify_mode: node['push_jobs']['chef']['ssl_verify_mode'],
     include_timestamp: node['push_jobs']['chef']['include_timestamp'])
+    allow_unencrypted: node['push_jobs']['chef']['allow_unencrypted']
 end
